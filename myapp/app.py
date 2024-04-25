@@ -15,7 +15,7 @@ ui.page_opts(
 ui.input_date_range("daterange", "Date range", start="2020-01-01") 
 
 #interactivity to let the user input their depth of interest
-ui.input_numeric("numeric", "Numeric input", 0) 
+ui.input_numeric("numeric", "Enter depth of interest", 0) 
 
 #create a nav panel for the about's page
 with ui.nav_panel("About"):  
