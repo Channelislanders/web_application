@@ -1,10 +1,7 @@
-from functools import partial
 from pathlib import Path
 
 from shiny import App, Inputs, Outputs, Session, render, ui
-#from shiny.express import input, ui
-#from shiny.ui import page_navbar
-from shared import ds_20C
+#from shared import ds_20C
 here = Path(__file__).parent
 
 app_ui = ui.page_navbar(
@@ -26,8 +23,7 @@ app_ui = ui.page_navbar(
         {"class": "bslib-page-dashboard"},
     ), 
     sidebar=ui.sidebar(
-    ui.sidebar(
-        ui.input_select(
+        ui.input_select( #we want these types of choices: 1. what type of run we want? (historical, etc)
             "account",
             "Account",
             choices=[
@@ -43,7 +39,6 @@ app_ui = ui.page_navbar(
     id="tabs",
     title="Model scoring dashboard",
     fillable=True,
-),
 )
 
 
