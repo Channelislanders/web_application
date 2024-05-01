@@ -46,8 +46,13 @@ app_ui = ui.page_navbar(
 ),
 )
 
+
+def server(input, output, session):
+    pass
+
+
 #def server(input: Inputs):
-#    @reactive.calc()
+ #   @reactive.calc()
  #   def dat() -> pd.DataFrame:
  #       return scores.loc[scores["account"] == input.account()]
 
@@ -77,10 +82,6 @@ app_ui = ui.page_navbar(
 
 
 app = App(app_ui, server)
-
-
-
-
 
 
 
