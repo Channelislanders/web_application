@@ -14,16 +14,7 @@ app_ui = ui.page_navbar(
     ),
     ui.nav_panel(
         "Visualizations",
-        ui.navset_card_underline(
-            ui.nav_panel("Time Series", ui.output_plot("roc_curve")),
-            ui.nav_panel("Vertical Profile", ui.output_plot("precision_recall")),
-            ui.nav_panel("Mapping", ui.output_plot("precision_recall")),
-            title="Model Metrics",
-        ),
-        {"class": "bslib-page-dashboard"},
-    ), 
-    sidebar=ui.sidebar(
-        ui.input_select( #we want these types of choices: 1. what type of run we want? (historical, etc)
+            ui.input_select( 
             "account",
             "Account",
             choices=[
@@ -33,9 +24,16 @@ app_ui = ui.page_navbar(
                 "Mosciski and Sons",
                 "Wolff Ltd",
             ],
-        ),
-        open = "closed"
-    ),
+        ), 
+        ui.navset_card_underline(
+            ui.nav_panel("Time Series", ui.output_plot("roc_curve")),
+            ui.nav_panel("Vertical Profile", ui.output_plot("precision_recall")),
+            ui.nav_panel("Mapping", ui.output_plot("precision_recall")),
+            title="Model Metrics",
+        ),    
+        {"class": "bslib-page-dashboard"},
+    ), 
+
     id="tabs",
     title="Model scoring dashboard",
     fillable=True,
