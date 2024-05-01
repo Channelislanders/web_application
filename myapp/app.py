@@ -10,31 +10,23 @@ here = Path(__file__).parent
 app_ui = ui.page_navbar(
     ui.nav_spacer(),
         ui.nav_panel(
-        "About",
-        ui.layout_columns(
-            ui.value_box(title="Row count", value=ui.output_text("row_count")),
-            ui.value_box(
-                title="Mean training score", value=ui.output_text("mean_score")
-            ),
-            fill=False,
-        ),
-        ui.card(ui.output_data_frame("data")),
-        {"class": "bslib-page-dashboard"},
+        "About", "About CINMS and our collaboration with NOAA The Channel Islands have been a core national park, providing socal visitors a chance to visit nature in their own backyard. Unfortunatly, from the pressures of various climate"
     ),
     ui.nav_panel(
-        "Training Dashboard",
+        "Data", "Talk about CESM 1"
+    ),
+    ui.nav_panel(
+        "Visualizations",
         ui.navset_card_underline(
-            ui.nav_panel("ROC Curve", ui.output_plot("roc_curve")),
-            ui.nav_panel("Precision/Recall", ui.output_plot("precision_recall")),
+            ui.nav_panel("Time Series", ui.output_plot("roc_curve")),
+            ui.nav_panel("Vertical Profile", ui.output_plot("precision_recall")),
+            ui.nav_panel("Mapping", ui.output_plot("precision_recall")),
             title="Model Metrics",
         ),
-        ui.card(
-            ui.card_header("Training Scores"),
-            ui.output_plot("score_dist"),
-        ),
         {"class": "bslib-page-dashboard"},
-    ),
+    ), 
     sidebar=ui.sidebar(
+    ui.sidebar(
         ui.input_select(
             "account",
             "Account",
@@ -45,42 +37,43 @@ app_ui = ui.page_navbar(
                 "Mosciski and Sons",
                 "Wolff Ltd",
             ],
-        )
+        ),
+        open = "closed"
     ),
     id="tabs",
     title="Model scoring dashboard",
     fillable=True,
+),
 )
 
+#def server(input: Inputs):
+#    @reactive.calc()
+ #   def dat() -> pd.DataFrame:
+ #       return scores.loc[scores["account"] == input.account()]
 
-def server(input: Inputs):
-    @reactive.calc()
-    def dat() -> pd.DataFrame:
-        return scores.loc[scores["account"] == input.account()]
+ #   @render.plot
+ #   def score_dist():
+ #       return plot_score_distribution(dat())
 
-    @render.plot
-    def score_dist():
-        return plot_score_distribution(dat())
+#    @render.plot
+ #   def roc_curve():
+#        return plot_auc_curve(dat(), "is_electronics", "training_score")
 
-    @render.plot
-    def roc_curve():
-        return plot_auc_curve(dat(), "is_electronics", "training_score")
+#    @render.plot
+#    def precision_recall():
+ #       return plot_precision_recall_curve(dat(), "is_electronics", "training_score")
 
-    @render.plot
-    def precision_recall():
-        return plot_precision_recall_curve(dat(), "is_electronics", "training_score")
+ #   @render.text
+#    def row_count():
+#        return dat().shape[0]
 
-    @render.text
-    def row_count():
-        return dat().shape[0]
+ #   @render.text
+#    def mean_score():
+#        return round(dat()["training_score"].mean(), 2)
 
-    @render.text
-    def mean_score():
-        return round(dat()["training_score"].mean(), 2)
-
-    @render.data_frame
-    def data():
-        return dat()
+ #   @render.data_frame
+ #   def data():
+ #       return dat()
 
 
 app = App(app_ui, server)
