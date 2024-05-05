@@ -4,74 +4,68 @@ from shiny import App, Inputs, Outputs, Session, render, ui
 #from shared import ds_20C
 here = Path(__file__).parent
 
+climate_variable_choices = [
+    "Sea Surface Temperature",
+    "Salinity",
+    "Dissolved Oxygen"
+]
+
+time_series_choices = [
+    "Historical",
+    "20TH Century",
+    "RCP 8.5"
+]
+
 app_ui = ui.page_navbar(
     ui.nav_spacer(),
-        ui.nav_panel(
-        "About", "About CINMS and our collaboration with NOAA The Channel Islands have been a core national park, providing socal visitors a chance to visit nature in their own backyard. Unfortunatly, from the pressures of various climate"
+    ui.nav_panel(
+        "About", 
+        "About CINMS and our collaboration with NOAA The Channel Islands have been a core national park, providing socal visitors a chance to visit nature in their own backyard. Unfortunately, from the pressures of various climate"
     ),
     ui.nav_panel(
-        "Data", "Talk about CESM 1"
+        "Data", 
+        "Talk about CESM 1"
     ),
     ui.nav_panel(
         "Visualizations",
-            ui.input_select( 
-            "account",
-            "Account",
-            choices=[
-                "Berge & Berge",
-                "Fritsch & Fritsch",
-                "Hintz & Hintz",
-                "Mosciski and Sons",
-                "Wolff Ltd",
-            ],
-        ), 
+        ui.input_select(
+            "climate_variable",
+            "Climate Variable",
+            choices=climate_variable_choices
+        ),
+        ui.input_select(
+            "time_series",
+            "Time Frame",
+            choices=time_series_choices
+        ),
         ui.navset_card_underline(
             ui.nav_panel("Time Series", ui.output_plot("roc_curve")),
             ui.nav_panel("Vertical Profile", ui.output_plot("precision_recall")),
             ui.nav_panel("Mapping", ui.output_plot("precision_recall")),
             title="Model Metrics",
-        ),    
+        ),
         {"class": "bslib-page-dashboard"},
     ), 
-
     id="tabs",
-    title="Model scoring dashboard",
+    title="Channel Islands Marine Sanctuary Climate Variability",
     fillable=True,
 )
 
 
+
 def server(input, output, session):
-    pass
+    @app.callback(
+        Outputs("roc_curve", "figure"),
+        [Inputs("climate_variable", "value")]
+        [Inputs("time_series", "value")]
+    )
+    def update_plots(climate_variable):
+        # Here you can write logic to update the plots based on the selected climate variable
+        # Example: Fetch data and generate new plot based on 'climate_variable'
+        # Replace this with your actual implementation
+        figure = generate_plot(climate_variable)  # Replace 'generate_plot' with your function
+        return figure
 
-
-#def server(input: Inputs):
- #   @reactive.calc()
- #   def dat() -> pd.DataFrame:
- #       return scores.loc[scores["account"] == input.account()]
-
- #   @render.plot
- #   def score_dist():
- #       return plot_score_distribution(dat())
-
-#    @render.plot
- #   def roc_curve():
-#        return plot_auc_curve(dat(), "is_electronics", "training_score")
-
-#    @render.plot
-#    def precision_recall():
- #       return plot_precision_recall_curve(dat(), "is_electronics", "training_score")
-
- #   @render.text
-#    def row_count():
-#        return dat().shape[0]
-
- #   @render.text
-#    def mean_score():
-#        return round(dat()["training_score"].mean(), 2)
-
- #   @render.data_frame
- #   def data():
- #       return dat()
 
 
 app = App(app_ui, server)
