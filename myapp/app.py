@@ -29,13 +29,13 @@ app_ui = ui.page_navbar(
     ui.nav_panel(
         "Visualizations",
         ui.input_select(
-            "climate_variable",
-            "Climate Variable",
+            id = "climate_variable",
+            label = "Climate Variable",
             choices=climate_variable_choices
         ),
         ui.input_select(
-            "time_series",
-            "Time Frame",
+            id = "time_series",
+            label = "Time Frame",
             choices=time_series_choices
         ),
         ui.navset_card_underline(
