@@ -42,20 +42,30 @@ def time_series(df: DataFrame, true_col: str, pred_col: str):
     #select just one point on the graph (this point is closest to channel islands)
     point_3 = point_2.isel(nlat=(280), nlon=(240))
 
-
-    precision, recall, _ = precision_recall_curve(df[true_col], df[pred_col])
-
-    pr_df = DataFrame({"precision": precision, "recall": recall})
-
     plot = (
-        ggplot(pr_df, aes(x="recall", y="precision"))
-        + geom_line(color="darkorange", size=1.5, show_legend=True, linetype="solid")
-        + labs(
-            title="Precision-Recall Curve",
-            x="Recall",
-            y="Precision",
-        )
-        + theme_minimal()
+
+        #plot out time series graph
+        point_3.plot()
+
+        #add title to graph
+        plt.title("Sea Surface temperature Time Series")
     )
 
     return plot
+
+    # precision, recall, _ = precision_recall_curve(df[true_col], df[pred_col])
+
+    # pr_df = DataFrame({"precision": precision, "recall": recall})
+
+    # plot = (
+    #     ggplot(pr_df, aes(x="recall", y="precision"))
+    #     + geom_line(color="darkorange", size=1.5, show_legend=True, linetype="solid")
+    #     + labs(
+    #         title="Precision-Recall Curve",
+    #         x="Recall",
+    #         y="Precision",
+    #     )
+    #     + theme_minimal()
+    # )
+
+    # return plot

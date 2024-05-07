@@ -1,7 +1,8 @@
 from pathlib import Path
 
 from shiny import App, Inputs, Outputs, Session, render, ui
-#from shared import ds_20C
+from shared import ds_20C
+from plots import time_series
 here = Path(__file__).parent
 
 climate_variable_choices = [
@@ -20,11 +21,11 @@ app_ui = ui.page_navbar(
     ui.nav_spacer(),
     ui.nav_panel(
         "About", 
-        "About CINMS and our collaboration with NOAA The Channel Islands have been a core national park, providing socal visitors a chance to visit nature in their own backyard. Unfortunately, from the pressures of various climate"
+        "The Channel Islands have been a core national park, providing socal visitors a chance to visit nature in their own backyard. Unfortunately, from the pressures of various climate, the Channel Islands faces increased vulnerability to climate-induced 'shock' events, threatening diverse marine species and habitats. These events can include marine heat waves, and extreme increases (or decreases) in pH or dissolved oxygen. A collaborative project between UCSB and CINMS, funded by the National Oceanic and Atmospheric Association (NOAA), aims to develop climate-based indicators to enhance understanding and management."
     ),
     ui.nav_panel(
         "Data", 
-        "Talk about CESM 1"
+        "A comprehensive Earth system model that simulates various components of the Earth's climate system, including the atmosphere, ocean, land surface, and sea ice."
     ),
     ui.nav_panel(
         "Visualizations",
@@ -39,9 +40,9 @@ app_ui = ui.page_navbar(
             choices=time_series_choices
         ),
         ui.navset_card_underline(
-            ui.nav_panel("Time Series", ui.output_plot("roc_curve")),
-            ui.nav_panel("Vertical Profile", ui.output_plot("precision_recall")),
-            ui.nav_panel("Mapping", ui.output_plot("precision_recall")),
+            ui.nav_panel("Time Series", ui.output_plot("time_series")),
+            ui.nav_panel("Vertical Profile", ui.output_plot("vertical_profile")),
+            ui.nav_panel("Mapping", ui.output_plot("mapping")),
             title="Model Metrics",
         ),
         {"class": "bslib-page-dashboard"},
