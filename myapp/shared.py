@@ -4,7 +4,7 @@ import pandas as pd
 import intake
 
 app_dir = Path(__file__).parent
-df = pd.read_csv(app_dir / "penguins.csv")
+#df = pd.read_csv(app_dir / "penguins.csv")
 
 # Open original collection description file: CESM1 LENS
 cat_url = "https://ncar-cesm-lens.s3-us-west-2.amazonaws.com/catalogs/aws-cesm1-le.json"

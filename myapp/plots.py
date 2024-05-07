@@ -1,27 +1,14 @@
 from pandas import DataFrame
-from plotnine import (
-    aes,
-    geom_abline,
-    geom_density,
-    geom_line,
-    ggplot,
-    labs,
-    theme_minimal,
-)
-from sklearn.metrics import auc, precision_recall_curve, roc_curve
+import matplotlib.pyplot as plt
+from shared import ds_20C
 
 
-def plot_score_distribution(df: DataFrame):
-    plot = (
-        ggplot(df, aes(x="training_score"))
-        + geom_density(fill="blue", alpha=0.3)
-        + theme_minimal()
-        + labs(title="Model scores", x="Score")
-    )
-    return plot
+def mapping(df: DataFrame):
+    map = (map code goes here)
+    return map
 
 
-def plot_auc_curve(df: DataFrame, true_col: str, pred_col: str):
+def verticle_profile(df: DataFrame, true_col: str, pred_col: str):
     fpr, tpr, _ = roc_curve(df[true_col], df[pred_col])
     roc_auc = auc(fpr, tpr)
 
@@ -43,7 +30,19 @@ def plot_auc_curve(df: DataFrame, true_col: str, pred_col: str):
     return plot
 
 
-def plot_precision_recall_curve(df: DataFrame, true_col: str, pred_col: str):
+def time_series(df: DataFrame, true_col: str, pred_col: str):
+    test_2 = ds_20C.sel(time=slice("1920", "2000"))
+
+    #select the TEMP column and set z_t, which is depth to 0 for sea surface temeperature
+    test_2000_2 = test_2.TEMP.sel(z_t = 0, method = "nearest")
+
+    #select a member_id
+    point_2 = test_2000_2.sel(member_id = 2)
+
+    #select just one point on the graph (this point is closest to channel islands)
+    point_3 = point_2.isel(nlat=(280), nlon=(240))
+
+
     precision, recall, _ = precision_recall_curve(df[true_col], df[pred_col])
 
     pr_df = DataFrame({"precision": precision, "recall": recall})

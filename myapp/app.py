@@ -25,6 +25,17 @@ app_ui = ui.page_navbar(
                 "Wolff Ltd",
             ],
         ), 
+                    ui.input_select( 
+            "account",
+            "Account",
+            choices=[
+                "Berge & Berge",
+                "Fritsch & Fritsch",
+                "Hintz & Hintz",
+                "Mosciski and Sons",
+                "Wolff Ltd",
+            ],
+        ), 
         ui.navset_card_underline(
             ui.nav_panel("Time Series", ui.output_plot("roc_curve")),
             ui.nav_panel("Vertical Profile", ui.output_plot("precision_recall")),
