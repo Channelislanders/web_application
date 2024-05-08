@@ -17,6 +17,12 @@ time_series_choices = [
     "RCP 8.5"
 ]
 
+climate_experiment_choices = [
+    "Mean",
+    "Max",
+    "Min"
+]
+
 app_ui = ui.page_navbar(
     ui.nav_spacer(),
     ui.nav_panel(
@@ -29,17 +35,12 @@ app_ui = ui.page_navbar(
     ),
     ui.nav_panel(
         "Visualizations",
-        ui.input_select(
-            id = "climate_variable",
-            label = "Climate Variable",
-            choices=climate_variable_choices
-        ),
         ui.navset_card_underline(
             ui.nav_panel("Time Series", 
                 ui.input_select(
-                id = "time_series",
-                label = "Time Frame",
-                choices=time_series_choices
+                id = "climate_variable",
+                label = "Climate Variable",
+                choices=climate_variable_choices
         ),
                 ui.output_plot("time_series")),
             ui.nav_panel("Vertical Profile",
@@ -48,12 +49,32 @@ app_ui = ui.page_navbar(
                 label = "Time Frame",
                 choices=time_series_choices
         ),
+                ui.input_select(
+                id = "climate_variable",
+                label = "Climate Variable",
+                choices=climate_variable_choices
+        ),
+                ui.input_select(
+                id = "experiment_choice",
+                label = "Experiment Choice",
+                choices=climate_experiment_choices
+        ),
                 ui.output_plot("vertical_profile")),
             ui.nav_panel("Mapping",        
                 ui.input_select(
                 id = "time_series",
                 label = "Time Frame",
                 choices=time_series_choices
+        ),
+                ui.input_select(
+                id = "climate_variable",
+                label = "Climate Variable",
+                choices=climate_variable_choices
+        ),
+                ui.input_select(
+                id = "experiment_choice",
+                label = "Experiment Choice",
+                choices=climate_experiment_choices
         ),
             ui.output_plot("mapping")),
         title="Model Visualization",
@@ -64,6 +85,7 @@ app_ui = ui.page_navbar(
     title="Channel Islands Marine Sanctuary Climate Variability",
     fillable=True,
 )
+
 
 
 
