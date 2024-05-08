@@ -55,6 +55,14 @@ app_ui = ui.page_navbar(
 
 
 def server(input, output, session):
+    @reactive.calc
+
+    @render.plot(timeseries)
+    @render.plot(verticalProfile)
+    @render.plot(mapping)
+
+
+    
     @app.callback(
         Outputs("roc_curve", "figure"),
         [Inputs("climate_variable", "value")]
