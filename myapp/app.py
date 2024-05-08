@@ -1,8 +1,8 @@
 from pathlib import Path
 
-from shiny import App, Inputs, Outputs, Session, render, ui
-from shared import ds_20C
-from plots import time_series
+from shiny import App, Inputs, Outputs, Session, reactive, render, req, ui
+#from shared import ds_20C
+#from plots import time_series
 here = Path(__file__).parent
 
 climate_variable_choices = [
@@ -34,16 +34,29 @@ app_ui = ui.page_navbar(
             label = "Climate Variable",
             choices=climate_variable_choices
         ),
-        ui.input_select(
-            id = "time_series",
-            label = "Time Frame",
-            choices=time_series_choices
-        ),
         ui.navset_card_underline(
-            ui.nav_panel("Time Series", ui.output_plot("time_series")),
-            ui.nav_panel("Vertical Profile", ui.output_plot("vertical_profile")),
-            ui.nav_panel("Mapping", ui.output_plot("mapping")),
-            title="Model Metrics",
+            ui.nav_panel("Time Series", 
+                ui.input_select(
+                id = "time_series",
+                label = "Time Frame",
+                choices=time_series_choices
+        ),
+                ui.output_plot("time_series")),
+            ui.nav_panel("Vertical Profile",
+                ui.input_select(
+                id = "time_series",
+                label = "Time Frame",
+                choices=time_series_choices
+        ),
+                ui.output_plot("vertical_profile")),
+            ui.nav_panel("Mapping",        
+                ui.input_select(
+                id = "time_series",
+                label = "Time Frame",
+                choices=time_series_choices
+        ),
+            ui.output_plot("mapping")),
+        title="Model Visualization",
         ),
         {"class": "bslib-page-dashboard"},
     ), 
@@ -55,26 +68,32 @@ app_ui = ui.page_navbar(
 
 
 def server(input, output, session):
-    @reactive.calc
-
-    @render.plot(timeseries)
-    @render.plot(verticalProfile)
-    @render.plot(mapping)
-
-
+    pass
+#     @reactive.calc()
+#     def filtered_dataset():
+        #filter for what the user wants by time interest
+        
     
-    @app.callback(
-        Outputs("roc_curve", "figure"),
-        [Inputs("climate_variable", "value")]
-        [Inputs("time_series", "value")]
-    )
-    def update_plots(climate_variable):
-        # Here you can write logic to update the plots based on the selected climate variable
-        # Example: Fetch data and generate new plot based on 'climate_variable'
-        # Replace this with your actual implementation
-        figure = generate_plot(climate_variable)  # Replace 'generate_plot' with your function
-        return figure
 
+
+
+    # @render.plot(timeseries)
+    # @render.plot(verticalProfile)
+    # @render.plot(mapping)
+
+
+
+    # @app.callback(
+    #     Outputs("roc_curve", "figure"),
+    #     [Inputs("climate_variable", "value")]
+    #     [Inputs("time_series", "value")]
+    # )
+    # def update_plots(climate_variable):
+    #     # Here you can write logic to update the plots based on the selected climate variable
+    #     # Example: Fetch data and generate new plot based on 'climate_variable'
+    #     # Replace this with your actual implementation
+    #     figure = generate_plot(climate_variable)  # Replace 'generate_plot' with your function
+    #     return figure
 
 
 app = App(app_ui, server)
