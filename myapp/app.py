@@ -8,14 +8,23 @@ from shiny import App, Inputs, Outputs, Session, reactive, render, req, ui
 #from shared import temp
 here = Path(__file__).parent
 
+
+#combine arrray's here
 temp = xr.open_dataset(here / 'time_series_temp_test.nc'
 )
+o2 = xr.open_dataset(here / 'time_series_temp_o2.nc'
+)
+
+merge_test = xr.merge([temp, o2])
+merge_array = merge_test.to_array()
 
 
 climate_variable_choices = [
     "Sea Surface Temperature",
     "Salinity",
-    "Dissolved Oxygen"
+    "Dissolved Oxygen",
+    "O2",
+    "TEMP"
 ]
 
 time_series_choices = [
@@ -96,28 +105,31 @@ app_ui = ui.page_navbar(
 )
 
 
+#test to see if output can be stored here
+# output_test = input.climate_variable_time()
+# merge_test_2 = merge_test.output_test
+
 
 def server(input, output, session):
 
+#used to run application with passing the arguments below:
 #pass
 
+
+#render the time series plot
     @render.plot
+    #define time_series (goes into output)
     def time_series():
-        # test_2 = temp.sel(time="2000")
-
-        # #select the TEMP column and set z_t, which is depth to 0 for sea surface temeperature
-        # test_2000_2 = test_2.TEMP.sel(z_t = 0, method = "nearest")
-
-        # #select a member_id
-        # point_2 = test_2000_2.sel(member_id = 2)
-
-        # #select just one point on the graph (this point is closest to channel islands)
-        # point_3 = point_2.isel(nlat=(280), nlon=(240))
-
+# define x as the reactive input
+        x = input.climate_variable_time()
+#define y as subsetting for whatever variable is picked
+        y = merge_test[x]
+#create plot (maybe try to see if changing the title works?)
         plot = (
-            temp.TEMP.plot(),
-            plt.title("Sea Surface temperature Time Series")
+            y.plot(),
+            plt.title(f"{x} Time Series")
         )
+        #returns plot
         return plot
 
 
@@ -141,6 +153,11 @@ def server(input, output, session):
 
 
 app = App(app_ui, server)
+
+
+
+
+
 #     @reactive.calc()
 #     def filtered_dataset():
         #filter for what the user wants by time interest
