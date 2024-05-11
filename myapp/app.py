@@ -1,9 +1,16 @@
 from pathlib import Path
+import matplotlib.pyplot as plt
+import xarray as xr
 
 from shiny import App, Inputs, Outputs, Session, reactive, render, req, ui
 #from shared import ds_20C
 #from plots import time_series
+#from shared import temp
 here = Path(__file__).parent
+
+temp = xr.open_dataset(here / 'time_series_temp_test.nc'
+)
+
 
 climate_variable_choices = [
     "Sea Surface Temperature",
@@ -38,41 +45,43 @@ app_ui = ui.page_navbar(
         ui.navset_card_underline(
             ui.nav_panel("Time Series", 
                 ui.input_select(
-                id = "climate_variable",
+                id = "climate_variable_time",
                 label = "Climate Variable",
                 choices=climate_variable_choices
         ),
                 ui.output_plot("time_series")),
+
             ui.nav_panel("Vertical Profile",
                 ui.input_select(
-                id = "time_series",
+                id = "time_series_verticle",
                 label = "Time Frame",
                 choices=time_series_choices
         ),
                 ui.input_select(
-                id = "climate_variable",
+                id = "climate_variable_verticle",
                 label = "Climate Variable",
                 choices=climate_variable_choices
         ),
                 ui.input_select(
-                id = "experiment_choice",
+                id = "experiment_choice_verticle",
                 label = "Experiment Choice",
                 choices=climate_experiment_choices
         ),
                 ui.output_plot("vertical_profile")),
+
             ui.nav_panel("Mapping",        
                 ui.input_select(
-                id = "time_series",
+                id = "time_series_map",
                 label = "Time Frame",
                 choices=time_series_choices
         ),
                 ui.input_select(
-                id = "climate_variable",
+                id = "climate_variable_map",
                 label = "Climate Variable",
                 choices=climate_variable_choices
         ),
                 ui.input_select(
-                id = "experiment_choice",
+                id = "experiment_choice_map",
                 label = "Experiment Choice",
                 choices=climate_experiment_choices
         ),
@@ -88,9 +97,50 @@ app_ui = ui.page_navbar(
 
 
 
-
 def server(input, output, session):
-    pass
+
+#pass
+
+    @render.plot
+    def time_series():
+        # test_2 = temp.sel(time="2000")
+
+        # #select the TEMP column and set z_t, which is depth to 0 for sea surface temeperature
+        # test_2000_2 = test_2.TEMP.sel(z_t = 0, method = "nearest")
+
+        # #select a member_id
+        # point_2 = test_2000_2.sel(member_id = 2)
+
+        # #select just one point on the graph (this point is closest to channel islands)
+        # point_3 = point_2.isel(nlat=(280), nlon=(240))
+
+        plot = (
+            temp.TEMP.plot(),
+            plt.title("Sea Surface temperature Time Series")
+        )
+        return plot
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+app = App(app_ui, server)
 #     @reactive.calc()
 #     def filtered_dataset():
         #filter for what the user wants by time interest
@@ -116,16 +166,6 @@ def server(input, output, session):
     #     # Replace this with your actual implementation
     #     figure = generate_plot(climate_variable)  # Replace 'generate_plot' with your function
     #     return figure
-
-
-app = App(app_ui, server)
-
-
-
-
-
-
-
 
 
 #ui.page_opts(

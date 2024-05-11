@@ -2,8 +2,16 @@ from pathlib import Path
 
 import pandas as pd
 import intake
+import xarray as xr
 
 app_dir = Path(__file__).parent
+
+#test dataset
+temp = xr.open_dataset(app_dir / 'time_series_temp_test.nc'
+)
+
+
+
 #here is where the variables will be changed
 
 # Open original collection description file: CESM1 LENS
