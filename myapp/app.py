@@ -139,7 +139,7 @@ def server(input, output, session):
 # define x as the reactive input
         x = input.climate_variable_vertical()
 #define y as subsetting for whatever variable is picked
-        y = merge_test[x]
+        y = merge_test[x].max()
 #create plot (maybe try to see if changing the title works?)
         plot = (
             y.plot(),
