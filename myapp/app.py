@@ -52,6 +52,7 @@ app_ui = ui.page_navbar(
     ui.nav_panel(
         "Visualizations",
         ui.navset_card_underline(
+             #time series nav panel
             ui.nav_panel("Time Series", 
                 ui.input_select(
                 id = "climate_variable_time",
@@ -59,7 +60,7 @@ app_ui = ui.page_navbar(
                 choices=climate_variable_choices
         ),
                 ui.output_plot("time_series")),
-
+#vertical profile nav panel
             ui.nav_panel("Vertical Profile",
                 ui.input_select(
                 id = "time_series_vertical",
@@ -77,7 +78,7 @@ app_ui = ui.page_navbar(
                 choices=climate_experiment_choices
         ),
                 ui.output_plot("vertical_profile")),
-
+#mapping nav panel
             ui.nav_panel("Mapping",        
                 ui.input_select(
                 id = "time_series_map",
@@ -134,15 +135,23 @@ def server(input, output, session):
 
 #render the vertical profile plot
     @render.plot
-    #define time_series (goes into output)
+    #define vertical_profile (goes into output)
     def vertical_profile():
 # define x as the reactive input
         x = input.climate_variable_vertical()
 #define y as subsetting for whatever variable is picked
         y = merge_test[x]
+
+        if (input.experiment_choice_vertical() == 'mean'):
+            a = y#.mean()
+        elif (input.experiment_choice_vertical() == 'max'):
+            a = y#.max()
+        # elif (input.experiment_choice_vertical() == 'min'):
+        #     a = y.to_dataset#.min()
+
 #create plot (maybe try to see if changing the title works?)
         plot = (
-            y.plot(),
+            a.plot(),
             plt.title(f"{x} Time Series")
         )
         #returns plot
