@@ -34,9 +34,9 @@ time_series_choices = [
 ]
 
 climate_experiment_choices = [
-    "Mean",
-    "Max",
-    "Min"
+    "mean",
+    "max",
+    "min"
 ]
 
 app_ui = ui.page_navbar(
@@ -62,17 +62,17 @@ app_ui = ui.page_navbar(
 
             ui.nav_panel("Vertical Profile",
                 ui.input_select(
-                id = "time_series_verticle",
+                id = "time_series_vertical",
                 label = "Time Frame",
                 choices=time_series_choices
         ),
                 ui.input_select(
-                id = "climate_variable_verticle",
+                id = "climate_variable_vertical",
                 label = "Climate Variable",
                 choices=climate_variable_choices
         ),
                 ui.input_select(
-                id = "experiment_choice_verticle",
+                id = "experiment_choice_vertical",
                 label = "Experiment Choice",
                 choices=climate_experiment_choices
         ),
@@ -109,12 +109,10 @@ app_ui = ui.page_navbar(
 # output_test = input.climate_variable_time()
 # merge_test_2 = merge_test.output_test
 
-
 def server(input, output, session):
 
 #used to run application with passing the arguments below:
 #pass
-
 
 #render the time series plot
     @render.plot
@@ -131,18 +129,24 @@ def server(input, output, session):
         )
         #returns plot
         return plot
+    
 
 
-
-
-
-
-
-
-
-
-
-
+#render the vertical profile plot
+    @render.plot
+    #define time_series (goes into output)
+    def vertical_profile():
+# define x as the reactive input
+        x = input.climate_variable_vertical()
+#define y as subsetting for whatever variable is picked
+        y = merge_test[x]
+#create plot (maybe try to see if changing the title works?)
+        plot = (
+            y.plot(),
+            plt.title(f"{x} Time Series")
+        )
+        #returns plot
+        return plot
 
 
 
