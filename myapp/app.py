@@ -9,14 +9,16 @@ from shiny import App, Inputs, Outputs, Session, reactive, render, req, ui
 here = Path(__file__).parent
 
 
-#combine arrray's here
-temp = xr.open_dataset(here / 'time_series_temp_test.nc'
+#load and combine arrray's here:
+temp = xr.open_dataset(here / 'time_series_1990_2000_temp.nc'
 )
-o2 = xr.open_dataset(here / 'time_series_temp_o2.nc'
+o2 = xr.open_dataset(here / 'time_series_1990_2000_o2.nc'
 )
-
-merge_test = xr.merge([temp, o2])
-merge_array = merge_test.to_array()
+salt = xr.open_dataset(here / 'time_series_1990_2000_salt.nc'
+)
+#merge arrays here
+merge_test = xr.merge([temp, o2, salt])
+merge_array = merge_test#.to_array()
 
 
 climate_variable_choices = [
@@ -141,14 +143,13 @@ def server(input, output, session):
         x = input.climate_variable_vertical()
 #define y as subsetting for whatever variable is picked
         y = merge_test[x]
-
+#experiment choice input using an if else statement
         if (input.experiment_choice_vertical() == 'mean'):
-            a = y#.mean()
+            a = y.mean("member_id")
         elif (input.experiment_choice_vertical() == 'max'):
-            a = y#.max()
-        # elif (input.experiment_choice_vertical() == 'min'):
-        #     a = y.to_dataset#.min()
-
+            a = y.max("member_id")
+        elif (input.experiment_choice_vertical() == 'min'):
+            a = y.min("member_id")
 #create plot (maybe try to see if changing the title works?)
         plot = (
             a.plot(),
