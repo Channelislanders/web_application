@@ -33,7 +33,7 @@ Vertical profiles and maps will show three drop down menus where the user will b
 
 The structure of the reposotory is as follows:
 ```
-Channelislanders
+web_application
 │   README.md
 │  .gitignore
 |  LICENSE
