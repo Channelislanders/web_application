@@ -10,8 +10,6 @@ pip install shiny
 
 **Features:**
 
-The web application primarily targets the CINMS staff as its audience and will serve as a baseline for further development. 
-
 The user is recommended to navigate through each tab within the application in the following order:
 
 **About**
@@ -20,7 +18,7 @@ In this section, users have the opportunity to delve deeper into the project's d
 
 **Data**
 
-Due to the infrequency of the data utilized in this application for sanctuary management, this section will elaborate on the details of leveraging large ensemble climate models. It will specifically describe CESM1 data and explore why these models are indispensable tools, offering insights into how they enhance our understanding of complex environmental dynamics and variability.
+Due to the infrequency of the data utilized in this application for sanctuary management, this section will elaborate on the details of leveraging large ensemble climate models. It will specifically describe Community Earth System Model version 1 (CESM1.0) data and explore why these models are indispensable tools, offering insights into how they enhance our understanding of complex environmental dynamics and variability.
 
 **Visualizations**
 
