@@ -45,7 +45,13 @@ app_ui = ui.page_navbar(
     ui.nav_spacer(),
     ui.nav_panel(
         "About", 
-        "The Channel Islands have been a core national park, providing socal visitors a chance to visit nature in their own backyard. Unfortunately, from the pressures of various climate, the Channel Islands faces increased vulnerability to climate-induced 'shock' events, threatening diverse marine species and habitats. These events can include marine heat waves, and extreme increases (or decreases) in pH or dissolved oxygen. A collaborative project between UCSB and CINMS, funded by the National Oceanic and Atmospheric Association (NOAA), aims to develop climate-based indicators to enhance understanding and management."
+        ui.output_image("ch_image"),
+        ui.markdown(
+        """
+        The Channel Islands have been a core national park, providing socal visitors a chance to visit nature in their own backyard. Unfortunately, from the pressures of various climate, the Channel Islands faces increased vulnerability to climate-induced 'shock' events, threatening diverse marine species and habitats. These events can include marine heat waves, and extreme increases (or decreases) in pH or dissolved oxygen. A collaborative project between UCSB and CINMS, funded by the National Oceanic and Atmospheric Association (NOAA), aims to develop climate-based indicators to enhance understanding and management. [link](www.youtube.com)
+         ![](ch_poster.jpg)
+        """
+    ),
     ),
     ui.nav_panel(
         "Data", 
@@ -60,6 +66,11 @@ app_ui = ui.page_navbar(
                 id = "climate_variable_time",
                 label = "Climate Variable",
                 choices=climate_variable_choices
+        ),
+            ui.input_select(
+                id = "experiment_choice_time",
+                label = "Experiment Choice",
+                choices=climate_experiment_choices
         ),
                 ui.output_plot("time_series")),
 #vertical profile nav panel
@@ -125,9 +136,16 @@ def server(input, output, session):
         x = input.climate_variable_time()
 #define y as subsetting for whatever variable is picked
         y = merge_test[x]
+    #experiment choice input using an if else statement
+        if (input.experiment_choice_time() == 'mean'):
+            a = y.mean("member_id")
+        elif (input.experiment_choice_time() == 'max'):
+            a = y.max("member_id")
+        elif (input.experiment_choice_time() == 'min'):
+            a = y.min("member_id")
 #create plot (maybe try to see if changing the title works?)
         plot = (
-            y.plot(),
+            a.plot(),
             plt.title(f"{x} Time Series")
         )
         #returns plot
@@ -158,10 +176,11 @@ def server(input, output, session):
         #returns plot
         return plot
 
-
-
-
-
+#render image to appear in web dashboard
+    @render.image
+    def ch_image():
+        img = {"src": here / "ch_poster.jpg", "width": "100px"}
+        return img
 
 
 
