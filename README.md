@@ -8,6 +8,8 @@ To get started with shiny follow the installation instructions or just install i
 pip install shiny
 ```
 
+The web application itself is hosued within the `app.py` document in the `myapp` folder.
+
 **Features:**
 
 The user is recommended to navigate through each tab within the application in the following order:
