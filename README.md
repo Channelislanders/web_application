@@ -1,4 +1,4 @@
-# Web Application for Channel Island variable observations
+# Web Application for Channel Islands variable observations
 Repository housing the code needed for the interactive web application.
 
 Getting started
