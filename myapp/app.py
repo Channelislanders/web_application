@@ -22,9 +22,13 @@ merge_array = merge_test#.to_array()
 
 
 climate_variable_choices = [
-    "Sea Surface Temperature",
-    "Salinity",
-    "Dissolved Oxygen",
+    "SALT",
+    "O2",
+    "TEMP"
+]
+
+climate_variable_choices = [
+    "SALT",
     "O2",
     "TEMP"
 ]
@@ -45,7 +49,9 @@ app_ui = ui.page_navbar(
     ui.nav_spacer(),
     ui.nav_panel(
         "About", 
+        ui.markdown(
         "The Channel Islands have been a core national park, providing socal visitors a chance to visit nature in their own backyard. Unfortunately, from the pressures of various climate, the Channel Islands faces increased vulnerability to climate-induced 'shock' events, threatening diverse marine species and habitats. These events can include marine heat waves, and extreme increases (or decreases) in pH or dissolved oxygen. A collaborative project between UCSB and CINMS, funded by the National Oceanic and Atmospheric Association (NOAA), aims to develop climate-based indicators to enhance understanding and management."
+        ),
     ),
     ui.nav_panel(
         "Data", 
