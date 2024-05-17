@@ -11,15 +11,18 @@ here = Path(__file__).parent
 
 
 #load and combine arrray's here:
-temp = xr.open_dataset(here / 'time_series_1990_2000_temp.nc'
+temp = xr.open_dataset(here / '20C_rcp85_temp.nc'
 )
-o2 = xr.open_dataset(here / 'time_series_1990_2000_o2.nc'
+o2 = xr.open_dataset(here / '20C_rcp85_o2.nc'
 )
-salt = xr.open_dataset(here / 'time_series_1990_2000_salt.nc'
+salt = xr.open_dataset(here / '20C_rcp85_salt.nc'
 )
+sst = xr.open_dataset(here / '20C_rcp85_sst.nc'
+)
+
 #merge arrays here
 merge_test = xr.merge([temp, o2, salt])
-merge_array = merge_test#.to_array()
+merge_array = merge_test
 
 
 climate_variable_choices_TEMP = [
@@ -182,7 +185,7 @@ def server(input, output, session):
             a = y.min("member_id")
 #create plot (maybe try to see if changing the title works?)
         plot = (
-            a.plot(),
+            a.sel(z_t = 0, method = "nearest").plot(),
             plt.title(f"{x} Time Series")
         )
         #returns plot
