@@ -186,7 +186,7 @@ def server(input, output, session):
 #create plot (maybe try to see if changing the title works?)
         plot = (
             a.sel(z_t = 0, method = "nearest").plot(),
-            plt.title(f"{x} Time Series")
+            plt.title(f"{x} Time Series") #think about implimenting depths into our time series?
         )
         #returns plot
         return plot
