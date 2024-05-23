@@ -22,7 +22,11 @@ sst = xr.open_dataset(here / '20C_rcp85_sst.nc'
 
 #merge arrays here
 merge_test = xr.merge([temp, o2, salt])
-merge_array = merge_test
+
+#seperate into 20C and rcp85 here
+
+
+
 
 
 climate_variable_choices_TEMP = [
@@ -54,7 +58,7 @@ app_ui = ui.page_navbar(shinyswatch.theme.sandstone(),
     ui.nav_panel(
         "About", 
         ui.layout_columns(
-        ui.output_image("ch_image", inline=True),
+        ui.output_image("ch_image", inline=True, fill=True),
         ui.markdown(
         """
         ## Purpose
@@ -72,9 +76,13 @@ app_ui = ui.page_navbar(shinyswatch.theme.sandstone(),
         
         This project was led by Dr. Samantha Stevenson-Michener, who leads the [Climate Data Lab](https://climate-datalab.org/) organization, which strives to break the barriers of those interested in getting into climate science research. This project was also led by Olivia Holt, Diana Navarro, and Patricia Park.
 
+
+
+        Image from the NOAA 50th anniversary [poster series](https://sanctuaries.noaa.gov/posters/)
+
         """
     ),
-        col_widths=(3, 8)
+        col_widths=(3, 8), fillable=True
     ),
     ),
     ui.nav_panel(
@@ -89,8 +97,12 @@ app_ui = ui.page_navbar(shinyswatch.theme.sandstone(),
         ## Large Ensemble
         A large ensemble is a set of simulations run with a given climate model which only vary the initial conditions. In this project the large ensemble used is CESM1 which is able to give historical, present and future readings of the outcome variables.
 
-        ## CESM-LE
+        ## [CESM-LE](https://www.cesm.ucar.edu/community-projects/lens)
         Distinguishing between model error and natural climate variations can be tricky. To address this challenge, the CESM community developed the CESM Large Ensemble (CESM-LE) specifically to help understand climate change while considering natural fluctuations. All simulations within CESM-LE utilize a single CMIP5 model, which is the CESM with the Community Atmosphere Model version 5. The plots created in this dashboard were created using CESM version 1 (CESM1).
+
+
+        A paper detailing the advantages of using CESM-LE can be found [here.](https://journals.ametsoc.org/view/journals/bams/96/8/bams-d-13-00255.1.xml)
+
 
         """
     ),
@@ -176,17 +188,24 @@ def server(input, output, session):
         x = input.climate_variable_time()
 #define y as subsetting for whatever variable is picked
         y = merge_test[x]
-    #experiment choice input using an if else statement
+#create if else statement to put into title of graph
+        if (input.climate_variable_vertical() == 'SALT'):
+            a = 'Salinity'
+        elif (input.climate_variable_vertical() == 'O2'):
+            a = "Dissolved Oxygen"
+        elif (input.climate_variable_vertical() == 'TEMP'):
+            a = "Temperature"
+#experiment choice input using an if else statement
         if (input.experiment_choice_time() == 'mean'):
-            a = y.mean("member_id")
+            b = y.mean("member_id")
         elif (input.experiment_choice_time() == 'max'):
-            a = y.max("member_id")
+            b = y.max("member_id")
         elif (input.experiment_choice_time() == 'min'):
-            a = y.min("member_id")
+            b = y.min("member_id")
 #create plot (maybe try to see if changing the title works?)
         plot = (
-            a.sel(z_t = 0, method = "nearest").plot(),
-            plt.title(f"{x} Time Series") #think about implimenting depths into our time series?
+            b.sel(z_t = 0, method = "nearest").plot(),
+            plt.title(f"{a} Time Series") #think about implimenting depths into our time series?
         )
         #returns plot
         return plot
@@ -201,17 +220,25 @@ def server(input, output, session):
         x = input.climate_variable_vertical()
 #define y as subsetting for whatever variable is picked
         y = merge_test[x]
+#create if else statement to put into title of graph
+        if (input.climate_variable_vertical() == 'SALT'):
+            a = 'Salinity'
+        elif (input.climate_variable_vertical() == 'O2'):
+            a = "Dissolved Oxygen"
+        elif (input.climate_variable_vertical() == 'TEMP'):
+            a = "Temperature"
 #experiment choice input using an if else statement
         if (input.experiment_choice_vertical() == 'mean'):
-            a = y.mean("member_id")
+            b = y.mean("time").mean("member_id")
         elif (input.experiment_choice_vertical() == 'max'):
-            a = y.max("member_id")
+            b = y.max("time").mean("member_id")
         elif (input.experiment_choice_vertical() == 'min'):
-            a = y.min("member_id")
+            b = y.min("time").mean("member_id")
 #create plot (maybe try to see if changing the title works?)
         plot = (
-            a.plot(),
-            plt.title(f"{x} Time Series")
+            b.plot(y = 'z_t'),
+            plt.gca().invert_yaxis(),
+            plt.title(f"{a} Vertical Profile")
         )
         #returns plot
         return plot
@@ -234,71 +261,3 @@ def server(input, output, session):
 
 app = App(app_ui, server)
 
-
-
-
-
-#     @reactive.calc()
-#     def filtered_dataset():
-        #filter for what the user wants by time interest
-        
-    
-
-
-
-    # @render.plot(timeseries)
-    # @render.plot(verticalProfile)
-    # @render.plot(mapping)
-
-
-
-    # @app.callback(
-    #     Outputs("roc_curve", "figure"),
-    #     [Inputs("climate_variable", "value")]
-    #     [Inputs("time_series", "value")]
-    # )
-    # def update_plots(climate_variable):
-    #     # Here you can write logic to update the plots based on the selected climate variable
-    #     # Example: Fetch data and generate new plot based on 'climate_variable'
-    #     # Replace this with your actual implementation
-    #     figure = generate_plot(climate_variable)  # Replace 'generate_plot' with your function
-    #     return figure
-
-
-#ui.page_opts(
- #   title="Channel Islands Visualizations",  
-  #  page_fn=partial(page_navbar, id="page"),  
-#)
-
-# interactivity to let user input their daterange of interest
-#ui.input_date_range("daterange", "Date range", start="2020-01-01") 
-
-#interactivity to let the user input their depth of interest
-#ui.input_numeric("numeric", "Enter depth of interest", 0) 
-
-#create a nav panel for the about's page
-#with ui.nav_panel("About"):  
-#    "About CINMS and our collaboration with NOAA The Channel Islands have been a core national park, providing socal visitors a chance to visit nature in their own backyard. Unfortunatly, from the pressures of various climate"
-
-
-#with ui.nav_panel("Data"):  
-#    "Talk a little about CESM"
-
-#with ui.nav_panel("Visualizations"):  
- #   "Visualizations of the Channel Islands"
-
-#@render.plot(alt = "Time series line plot")
-#def plot():
-    #slice for particular timeframe
- #   test_2 = ds_20C.sel(time=slice(input.daterange()["0"], input.daterange()["1"]))
-
-    #select the TEMP column and set z_t, which is depth to 0 for sea surface temeperature
-  #  test_2000_2 = test_2.TEMP.sel(z_t = input.numeric(), method = "nearest")
-
-    #select a member_id
-   # point_2 = test_2000_2.sel(member_id = 2)
-
-    #select just one point on the graph (this point is closest to channel islands)
-  #  point_3 = point_2.isel(nlat=(280), nlon=(240))
-
-   # return point_3.plot()
