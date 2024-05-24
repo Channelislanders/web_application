@@ -171,9 +171,6 @@ app_ui = ui.page_navbar(shinyswatch.theme.sandstone(),
 )
 
 
-#test to see if output can be stored here
-# output_test = input.climate_variable_time()
-# merge_test_2 = merge_test.output_test
 
 def server(input, output, session):
 
@@ -189,23 +186,23 @@ def server(input, output, session):
 #define y as subsetting for whatever variable is picked
         y = merge_test[x]
 #create if else statement to put into title of graph
-        if (input.climate_variable_vertical() == 'SALT'):
-            a = 'Salinity'
-        elif (input.climate_variable_vertical() == 'O2'):
-            a = "Dissolved Oxygen"
-        elif (input.climate_variable_vertical() == 'TEMP'):
-            a = "Temperature"
+        if (input.climate_variable_time() == 'SALT'):
+            a_1 = "Salinity"
+        elif (input.climate_variable_time() == 'O2'):
+            a_1 = "Dissolved Oxygen"
+        elif (input.climate_variable_time() == 'TEMP'):
+            a_1 = "Temperature"
 #experiment choice input using an if else statement
         if (input.experiment_choice_time() == 'mean'):
-            b = y.mean("member_id")
+            b_1 = y.mean("member_id")
         elif (input.experiment_choice_time() == 'max'):
-            b = y.max("member_id")
+            b_1 = y.max("member_id")
         elif (input.experiment_choice_time() == 'min'):
-            b = y.min("member_id")
+            b_1 = y.min("member_id")           
 #create plot (maybe try to see if changing the title works?)
         plot = (
-            b.sel(z_t = 0, method = "nearest").plot(),
-            plt.title(f"{a} Time Series") #think about implimenting depths into our time series?
+            b_1.sel(z_t = 0, method = "nearest").plot(),
+            plt.title(f"{a_1} Time Series")
         )
         #returns plot
         return plot
@@ -222,23 +219,23 @@ def server(input, output, session):
         y = merge_test[x]
 #create if else statement to put into title of graph
         if (input.climate_variable_vertical() == 'SALT'):
-            a = 'Salinity'
+            a_2 = 'Salinity'
         elif (input.climate_variable_vertical() == 'O2'):
-            a = "Dissolved Oxygen"
+            a_2 = "Dissolved Oxygen"
         elif (input.climate_variable_vertical() == 'TEMP'):
-            a = "Temperature"
+            a_2 = "Temperature"
 #experiment choice input using an if else statement
         if (input.experiment_choice_vertical() == 'mean'):
-            b = y.mean("time").mean("member_id")
+            b_2 = y.mean("time").mean("member_id")
         elif (input.experiment_choice_vertical() == 'max'):
-            b = y.max("time").mean("member_id")
+            b_2 = y.max("time").mean("member_id")
         elif (input.experiment_choice_vertical() == 'min'):
-            b = y.min("time").mean("member_id")
+            b_2 = y.min("time").mean("member_id")
 #create plot (maybe try to see if changing the title works?)
         plot = (
-            b.plot(y = 'z_t'),
+            b_2.plot(y = 'z_t'),
             plt.gca().invert_yaxis(),
-            plt.title(f"{a} Vertical Profile")
+            plt.title(f"{a_2} Vertical Profile")
         )
         #returns plot
         return plot
