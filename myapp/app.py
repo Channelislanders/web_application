@@ -2,11 +2,11 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import xarray as xr
 import shinyswatch
+import numpy as np
+import cartopy.crs as ccrs
+import geopandas as gpd
 
 from shiny import App, Inputs, Outputs, Session, reactive, render, req, ui
-#from shared import ds_20C
-#from plots import time_series
-#from shared import temp
 here = Path(__file__).parent
 
 
@@ -19,13 +19,17 @@ salt = xr.open_dataset(here / '20C_rcp85_salt.nc'
 )
 sst = xr.open_dataset(here / '20C_rcp85_sst.nc'
 )
+mapping_sst = xr.open_dataset(here / 'SST_20C_final.nc'
+)
+
 
 #merge arrays here
 merge_test = xr.merge([temp, o2, salt])
 
 #seperate into 20C and rcp85 here
+present = merge_test.sel(time=slice("1920", "2005"))
 
-
+rcp85 = merge_test.sel(time=slice("2005", "2100"))
 
 
 
@@ -41,8 +45,7 @@ climate_variable_choices_SST = [
     "TEMP"
 ]
 
-time_series_choices = [
-    "Historical",
+time_frame_choices = [
     "20TH Century",
     "RCP 8.5"
 ]
@@ -119,18 +122,13 @@ app_ui = ui.page_navbar(shinyswatch.theme.sandstone(),
                 label = "Climate Variable",
                 choices=climate_variable_choices_TEMP
         ),
-            ui.input_select(
-                id = "experiment_choice_time",
-                label = "Experiment Choice",
-                choices=climate_experiment_choices
-        ),
                 ui.output_plot("time_series")),
 #vertical profile nav panel
             ui.nav_panel("Vertical Profile",
                 ui.input_select(
-                id = "time_series_vertical",
+                id = "time_frame_vertical",
                 label = "Time Frame",
-                choices=time_series_choices
+                choices=time_frame_choices
         ),
                 ui.input_select(
                 id = "climate_variable_vertical",
@@ -146,9 +144,9 @@ app_ui = ui.page_navbar(shinyswatch.theme.sandstone(),
 #mapping nav panel
             ui.nav_panel("Mapping",        
                 ui.input_select(
-                id = "time_series_map",
+                id = "time_frame_map",
                 label = "Time Frame",
-                choices=time_series_choices
+                choices=time_frame_choices
         ),
                 ui.input_select(
                 id = "climate_variable_map",
@@ -184,7 +182,7 @@ def server(input, output, session):
 # define x as the reactive input
         x = input.climate_variable_time()
 #define y as subsetting for whatever variable is picked
-        y = merge_test[x]
+        y = merge_test[x].sel(z_t = 0, method = "nearest")
 #create if else statement to put into title of graph
         if (input.climate_variable_time() == 'SALT'):
             a_1 = "Salinity"
@@ -193,19 +191,21 @@ def server(input, output, session):
         elif (input.climate_variable_time() == 'TEMP'):
             a_1 = "Temperature"
 #experiment choice input using an if else statement
-        if (input.experiment_choice_time() == 'mean'):
-            b_1 = y.mean("member_id")
-        elif (input.experiment_choice_time() == 'max'):
-            b_1 = y.max("member_id")
-        elif (input.experiment_choice_time() == 'min'):
-            b_1 = y.min("member_id")           
-#create plot (maybe try to see if changing the title works?)
-        plot = (
-            b_1.sel(z_t = 0, method = "nearest").plot(),
-            plt.title(f"{a_1} Time Series")
-        )
-        #returns plot
-        return plot
+        mean_id = y.mean("member_id")
+        max_id = y.max("member_id")
+        min_id = y.min("member_id")
+#change the time portion of the xarray to datetime
+        time = mean_id.indexes['time'].to_datetimeindex()         
+#create plot
+
+        fig, ax = plt.subplots()
+
+        ax.plot(time, mean_id)
+        ax.fill_between(time, min_id, max_id, alpha=.5, linewidth=0, color = 'gray')
+
+        plt.title(f"Mean {a_1} Time Series")
+
+        return fig 
     
 
 
@@ -213,10 +213,15 @@ def server(input, output, session):
     @render.plot
     #define vertical_profile (goes into output)
     def vertical_profile():
+#create if else statement to determine if it is a present or rcp85 graph
+        if(input.time_frame_vertical() == "20TH Century"):
+            w = present
+        elif(input.time_frame_vertical() == "RCP 8.5"):
+            w = rcp85
 # define x as the reactive input
         x = input.climate_variable_vertical()
 #define y as subsetting for whatever variable is picked
-        y = merge_test[x]
+        y = w[x]
 #create if else statement to put into title of graph
         if (input.climate_variable_vertical() == 'SALT'):
             a_2 = 'Salinity'
@@ -239,6 +244,63 @@ def server(input, output, session):
         )
         #returns plot
         return plot
+
+
+
+#render the mapping plot
+    @render.plot
+    #define vertical_profile (goes into output)
+    def mapping():
+#create if else statement to determine if it is a present or rcp85 graph
+        # if(input.time_frame_vertical() == "20TH Century"):
+        #     w = present
+        # elif(input.time_frame_vertical() == "RCP 8.5"):
+        #     w = rcp85
+# define x as the reactive input
+#        x = input.climate_variable_mapping()
+#define y as subsetting for whatever variable is picked
+#        y = mapping_sst[x]
+        y = mapping_sst.SST
+#create if else statement to put into title of graph
+        # if (input.climate_variable_vertical() == 'SALT'):
+        #     a_2 = 'Salinity'
+        # elif (input.climate_variable_vertical() == 'O2'):
+        #     a_2 = "Dissolved Oxygen"
+        # elif (input.climate_variable_vertical() == 'TEMP'):
+        #     a_2 = "Temperature"
+#experiment choice input using an if else statement
+        # if (input.experiment_choice_vertical() == 'mean'):
+        #     b_2 = y.mean("time").mean("member_id")
+        # elif (input.experiment_choice_vertical() == 'max'):
+        #     b_2 = y.max("time").mean("member_id")
+        # elif (input.experiment_choice_vertical() == 'min'):
+        #     b_2 = y.min("time").mean("member_id")
+#create plot
+        ax = plt.axes(projection=ccrs.PlateCarree())
+        ax.set_title('Mean Sea Surface Temperature for 20th Century Runs in Southern California')
+        # Reverse the colormap
+        cmap = plt.cm.RdBu_r 
+        #Lets set the color bar on top of the plot, lets provide the cax argument to the colorbar function
+        ax.coastlines()
+        # #lets throw the shape file in here 
+        # shp = gpd.read_file('cinms_py')
+        # shp.boundary.plot(ax=ax, 
+        #                 color='midnightblue', 
+        #                 linewidth=4)
+        #lets make the plot contour rather than patch by using the contourf function
+        y.plot(ax=ax, 
+                transform=ccrs.PlateCarree(), 
+                cmap=cmap,
+                cbar_kwargs={'orientation': 'horizontal', 
+                            'label': 'Sea Surface Temperature (°C)', 
+                            'shrink': 0.8, 
+                            'pad': 0.05, 
+                            'aspect': 30,
+                                    #edit the ticks on the cbar
+                            'ticks': np.arange(10, 30, 2)})
+    
+
+
 
 #render channel Islands poster to appear in web dashboard
     @render.image
