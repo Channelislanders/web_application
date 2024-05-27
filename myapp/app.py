@@ -190,6 +190,13 @@ def server(input, output, session):
             a_1 = "Dissolved Oxygen"
         elif (input.climate_variable_time() == 'TEMP'):
             a_1 = "Temperature"
+#create if else statement to put y axis of graph
+        if (input.climate_variable_time() == 'SALT'):
+            a_2 = "Salinity (gram/kilogram)"
+        elif (input.climate_variable_time() == 'O2'):
+            a_2 = "Dissolved Oxygen (mmol/m^3)"
+        elif (input.climate_variable_time() == 'TEMP'):
+            a_2 = "Temperature (C)"
 #experiment choice input using an if else statement
         mean_id = y.mean("member_id")
         max_id = y.max("member_id")
@@ -202,8 +209,10 @@ def server(input, output, session):
 
         ax.plot(time, mean_id)
         ax.fill_between(time, min_id, max_id, alpha=.5, linewidth=0, color = 'gray')
+        ax.set_xlabel("Time")
+        ax.set_ylabel(f"{a_2}")
 
-        plt.title(f"Mean {a_1} Time Series")
+        plt.title(f"Mean {a_1} Time Series at ocean surface")
 
         return fig 
     
@@ -240,7 +249,7 @@ def server(input, output, session):
         plot = (
             b_2.plot(y = 'z_t'),
             plt.gca().invert_yaxis(),
-            plt.title(f"{a_2} Vertical Profile")
+            plt.title(f"{a_2} Vertical Profile for {input.time_frame_vertical()}")
         )
         #returns plot
         return plot
