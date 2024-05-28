@@ -5,6 +5,7 @@ import shinyswatch
 import numpy as np
 import cartopy.crs as ccrs
 import geopandas as gpd
+from os import path
 
 from shiny import App, Inputs, Outputs, Session, reactive, render, req, ui
 here = Path(__file__).parent
@@ -20,6 +21,8 @@ salt = xr.open_dataset(here / '20C_rcp85_salt.nc'
 sst = xr.open_dataset(here / '20C_rcp85_sst.nc'
 )
 mapping_sst = xr.open_dataset(here / 'SST_20C_final.nc'
+)
+mapping_salt = xr.open_dataset(here / 'SALT_20C_final.nc'
 )
 
 
@@ -242,9 +245,9 @@ def server(input, output, session):
         if (input.experiment_choice_vertical() == 'mean'):
             b_2 = y.mean("time").mean("member_id")
         elif (input.experiment_choice_vertical() == 'max'):
-            b_2 = y.max("time").mean("member_id")
+            b_2 = y.max("time").max("member_id")
         elif (input.experiment_choice_vertical() == 'min'):
-            b_2 = y.min("time").mean("member_id")
+            b_2 = y.min("time").min("member_id")
 #create plot (maybe try to see if changing the title works?)
         plot = (
             b_2.plot(y = 'z_t'),
@@ -268,8 +271,14 @@ def server(input, output, session):
 # define x as the reactive input
 #        x = input.climate_variable_mapping()
 #define y as subsetting for whatever variable is picked
+        if (input.climate_variable_mapping() == 'SALT'):
+            y = mapping_sst.SST
+        # elif (input.climate_variable_vertical() == 'O2'):
+        #     a_2 = "Dissolved Oxygen"
+        elif (input.climate_variable_mapping() == 'TEMP'):
+            y = mapping_salt.SALT
 #        y = mapping_sst[x]
-        y = mapping_sst.SST
+#        y = mapping_sst.SST
 #create if else statement to put into title of graph
         # if (input.climate_variable_vertical() == 'SALT'):
         #     a_2 = 'Salinity'
@@ -278,35 +287,69 @@ def server(input, output, session):
         # elif (input.climate_variable_vertical() == 'TEMP'):
         #     a_2 = "Temperature"
 #experiment choice input using an if else statement
-        # if (input.experiment_choice_vertical() == 'mean'):
-        #     b_2 = y.mean("time").mean("member_id")
-        # elif (input.experiment_choice_vertical() == 'max'):
-        #     b_2 = y.max("time").mean("member_id")
-        # elif (input.experiment_choice_vertical() == 'min'):
-        #     b_2 = y.min("time").mean("member_id")
+        if (input.experiment_choice_mapping() == 'mean'):
+            b_2 = y.mean("time")
+        elif (input.experiment_choice_mapping() == 'max'):
+            b_2 = y.max("time")
+        elif (input.experiment_choice_mapping() == 'min'):
+            b_2 = y.min("time")
 #create plot
+# Plot the subset data
+#        fig = plt.figure(figsize=(15, 10))
         ax = plt.axes(projection=ccrs.PlateCarree())
-        ax.set_title('Mean Sea Surface Temperature for 20th Century Runs in Southern California')
         # Reverse the colormap
         cmap = plt.cm.RdBu_r 
+        #lets make the plot contour rather than patch by using the contourf function
+        b_2.plot(ax=ax, 
+                        transform=ccrs.PlateCarree(), 
+                        cmap=cmap,
+                        cbar_kwargs={'orientation': 'horizontal', 
+                                    'label': 'Sea Surface Temperature (°C)', 
+                                    'shrink': 0.8, 
+                                    'pad': 0.05, 
+                                    'aspect': 30,
+                                    #edit the ticks on the cbar
+                                    'ticks': np.arange(10, 30, 2)})
         #Lets set the color bar on top of the plot, lets provide the cax argument to the colorbar function
         ax.coastlines()
-        # #lets throw the shape file in here 
+        #lets throw the shape file in here 
         # shp = gpd.read_file('cinms_py')
         # shp.boundary.plot(ax=ax, 
         #                 color='midnightblue', 
         #                 linewidth=4)
-        #lets make the plot contour rather than patch by using the contourf function
-        y.plot(ax=ax, 
-                transform=ccrs.PlateCarree(), 
-                cmap=cmap,
-                cbar_kwargs={'orientation': 'horizontal', 
-                            'label': 'Sea Surface Temperature (°C)', 
-                            'shrink': 0.8, 
-                            'pad': 0.05, 
-                            'aspect': 30,
-                                    #edit the ticks on the cbar
-                            'ticks': np.arange(10, 30, 2)})
+        ax.set_title('Mean Sea Surface Temperature for 20th Century Runs in Southern California')
+        
+        # plt.savefig('map.png')
+
+        # map = (here / 'map.png')
+
+
+
+
+        # fig, ax = plt.subplots()
+        # ax = plt.axes(projection=ccrs.PlateCarree())
+        # ax.set_title('Mean Sea Surface Temperature for 20th Century Runs in Southern California')
+        # # Reverse the colormap
+        # cmap = plt.cm.RdBu_r 
+        # #Lets set the color bar on top of the plot, lets provide the cax argument to the colorbar function
+        # ax.coastlines()
+        # # #lets throw the shape file in here 
+        # # shp = gpd.read_file('cinms_py')
+        # # shp.boundary.plot(ax=ax, 
+        # #                 color='midnightblue', 
+        # #                 linewidth=4)
+        # #lets make the plot contour rather than patch by using the contourf function
+        # y.plot(ax=ax, 
+        #         transform=ccrs.PlateCarree(), 
+        #         cmap=cmap,
+        #         cbar_kwargs={'orientation': 'horizontal', 
+        #                     'label': 'Sea Surface Temperature (°C)', 
+        #                     'shrink': 0.8, 
+        #                     'pad': 0.05, 
+        #                     'aspect': 30,
+        #                             #edit the ticks on the cbar
+        #                     'ticks': np.arange(10, 30, 2)})
+        #return fig
     
 
 
