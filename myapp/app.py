@@ -21,7 +21,7 @@ sst = xr.open_dataset(here / '20C_rcp85_sst.nc'
 )
 mapping_sst = xr.open_dataset(here / 'SST_20C_final.nc'
 )
-mapping_salt = xr.open_dataset(here / 'SALT_20C_final.nc'
+mapping_salt = xr.open_dataset(here / 'SST_20C_final.nc'
 )
 
 
@@ -276,7 +276,7 @@ def server(input, output, session):
         ax.set_ylabel("Depth (cm)",
                       size = 15)
         plt.title(f"Relationship between {a_2} and Depth in Channel Islands Marine Sanctuary: {input.time_frame_vertical()}",
-                      size = 20)
+                      size = 15)
 
         #returns plot
         return fig
@@ -295,11 +295,11 @@ def server(input, output, session):
 # define x as the reactive input
 #        x = input.climate_variable_mapping()
 #define y as subsetting for whatever variable is picked
-        if (input.climate_variable_map() == 'SALT'):
-            y = mapping_salt.SALT
+        # if (input.climate_variable_map() == 'SALT'):
+        #     y = mapping_salt.SALT
         # elif (input.climate_variable_vertical() == 'O2'):
         #     a_2 = "Dissolved Oxygen"
-        elif (input.climate_variable_map() == 'TEMP'):
+        if (input.climate_variable_map() == 'TEMP'):
             y = mapping_sst.SST
 #        y = mapping_sst[x]
 #        y = mapping_sst.SST
@@ -314,14 +314,14 @@ def server(input, output, session):
 
 #find mean of time and depth of salinity and O2
         if (input.experiment_choice_map() == 'mean'):
-            b_2 = y.mean("time")
+            b_2 = y.mean("member_id")
         elif (input.experiment_choice_map() == 'max'):
-            b_2 = y.max("time")
+            b_2 = y.max("member_id")
         elif (input.experiment_choice_map() == 'min'):
-            b_2 = y.min("time")
+            b_2 = y.min("member_id")
 #create plot
 # Plot the subset data
-        fig = plt.figure(figsize=(25, 20))
+        fig = plt.figure(figsize=(5, 10))
         ax = plt.axes(projection=ccrs.PlateCarree())
         # Reverse the colormap
         #cmap = plt.cm.RdBu_r 
@@ -330,10 +330,10 @@ def server(input, output, session):
                         transform=ccrs.PlateCarree(), 
                         cmap='GnBu',
                         cbar_kwargs={'orientation': 'horizontal', 
-                                    'label': 'Salinity (g/kg)'}) 
-                                    # 'shrink': 0.8, 
-                                    # 'pad': 0.05, 
-                                    # 'aspect': 30,
+                                    'label': 'Salinity (g/kg)',
+                                    'shrink': 0.2, 
+                                    'pad': 0.05, 
+                                    'aspect': 30})
                                     # #edit the ticks on the cbar
                                     # 'ticks': np.arange(10, 30, 2)})
         #Lets set the color bar on top of the plot, lets provide the cax argument to the colorbar function
@@ -344,7 +344,7 @@ def server(input, output, session):
                         color='midnightblue', 
                         linewidth=4)
         ax.set_title('Mean Salinity between 1920 and 2100 in Channel Islands Marine Sanctuary',
-                     size = 20)
+                     size = 10)
         
         # plt.savefig('map.png')
 
