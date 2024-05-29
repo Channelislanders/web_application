@@ -321,21 +321,21 @@ def server(input, output, session):
             b_2 = y.min("time")
 #create plot
 # Plot the subset data
-#        fig = plt.figure(figsize=(15, 10))
+        fig = plt.figure(figsize=(25, 20))
         ax = plt.axes(projection=ccrs.PlateCarree())
         # Reverse the colormap
-        cmap = plt.cm.RdBu_r 
+        #cmap = plt.cm.RdBu_r 
         #lets make the plot contour rather than patch by using the contourf function
         b_2.plot(ax=ax, 
                         transform=ccrs.PlateCarree(), 
-                        cmap=cmap,
+                        cmap='GnBu',
                         cbar_kwargs={'orientation': 'horizontal', 
-                                    'label': 'Sea Surface Temperature (°C)', 
-                                    'shrink': 0.8, 
-                                    'pad': 0.05, 
-                                    'aspect': 30,
-                                    #edit the ticks on the cbar
-                                    'ticks': np.arange(10, 30, 2)})
+                                    'label': 'Salinity (g/kg)'}) 
+                                    # 'shrink': 0.8, 
+                                    # 'pad': 0.05, 
+                                    # 'aspect': 30,
+                                    # #edit the ticks on the cbar
+                                    # 'ticks': np.arange(10, 30, 2)})
         #Lets set the color bar on top of the plot, lets provide the cax argument to the colorbar function
         ax.coastlines()
         #lets throw the shape file in here s
@@ -343,14 +343,13 @@ def server(input, output, session):
         shp.boundary.plot(ax=ax,
                         color='midnightblue', 
                         linewidth=4)
-        ax.set_title('Mean Sea Surface Temperature for 20th Century Runs in Southern California',
+        ax.set_title('Mean Salinity between 1920 and 2100 in Channel Islands Marine Sanctuary',
                      size = 20)
         
         # plt.savefig('map.png')
 
         # map = (here / 'map.png')
-
-
+        return fig
 
 
         # fig, ax = plt.subplots()
