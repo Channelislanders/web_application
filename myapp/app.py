@@ -184,7 +184,8 @@ def server(input, output, session):
 # define x as the reactive input
         x = input.climate_variable_time()
 #define y as subsetting for whatever variable is picked
-        y = merge_test[x].sel(z_t = 0, method = "nearest")
+        y = merge_test[x].mean(dim = "z_t")
+#        y = merge_test[x].sel(z_t = 0, method = "nearest")
 #create if else statement to put into title of graph
         if (input.climate_variable_time() == 'SALT'):
             a_1 = "Salinity"
@@ -198,7 +199,7 @@ def server(input, output, session):
         elif (input.climate_variable_time() == 'O2'):
             a_2 = "Dissolved Oxygen (mmol/m^3)"
         elif (input.climate_variable_time() == 'TEMP'):
-            a_2 = "Temperature (C)"
+            a_2 = "Temperature (°C)"
 #experiment choice input using an if else statement
         mean_id = y.mean("member_id")
         max_id = y.max("member_id")
@@ -211,10 +212,13 @@ def server(input, output, session):
 
         ax.plot(time, mean_id)
         ax.fill_between(time, min_id, max_id, alpha=.5, linewidth=0, color = 'gray')
-        ax.set_xlabel("Time")
-        ax.set_ylabel(f"{a_2}")
+        ax.set_xlabel("Time", 
+                      size = 15)
+        ax.set_ylabel(f"{a_2}",
+                      size = 15)
 
-        plt.title(f"Mean {a_1} Time Series at ocean surface")
+        plt.title(f"Mean {a_1} from 1920 to 2100 in Channel Islands Marine Sanctuary", 
+                  size = 20)
 
         return fig 
     
@@ -239,7 +243,7 @@ def server(input, output, session):
         elif (input.climate_variable_vertical() == 'O2'):
             a_2 = "Dissolved Oxygen"
         elif (input.climate_variable_vertical() == 'TEMP'):
-            a_2 = "Temperature"
+            a_2 = "Temperature (°C)"
 #experiment choice input using an if else statement
         if (input.experiment_choice_vertical() == 'mean'):
             b_2 = y.mean("time").mean("member_id")
@@ -248,13 +252,18 @@ def server(input, output, session):
         elif (input.experiment_choice_vertical() == 'min'):
             b_2 = y.min("time").min("member_id")
 #create plot (maybe try to see if changing the title works?)
-        plot = (
-            b_2.plot(y = 'z_t'),
-            plt.gca().invert_yaxis(),
-            plt.title(f"{a_2} Vertical Profile for {input.time_frame_vertical()}")
-        )
+        fig, ax = plt.subplots()
+        b_2.plot(y = 'z_t'),
+        plt.gca().invert_yaxis(),
+        ax.set_xlabel(f"{a_2}", 
+                      size = 15)
+        ax.set_ylabel("Depth (cm)",
+                      size = 15)
+        plt.title(f"{a_2} Vertical Profile for {input.time_frame_vertical()}",
+                      size = 20)
+
         #returns plot
-        return plot
+        return fig
 
 
 
@@ -285,7 +294,9 @@ def server(input, output, session):
         #     a_2 = "Dissolved Oxygen"
         # elif (input.climate_variable_vertical() == 'TEMP'):
         #     a_2 = "Temperature"
-#experiment choice input using an if else statement
+#experiment choice input using an if else statement 
+
+#find mean of time and depth of salinity and O2
         if (input.experiment_choice_map() == 'mean'):
             b_2 = y.mean("time")
         elif (input.experiment_choice_map() == 'max'):
@@ -312,11 +323,12 @@ def server(input, output, session):
         #Lets set the color bar on top of the plot, lets provide the cax argument to the colorbar function
         ax.coastlines()
         #lets throw the shape file in here s
-        # shp = gpd.read_file(here / 'cinms_py')
-        # shp.boundary.plot(ax=ax,
-        #                 color='midnightblue', 
-        #                 linewidth=4)
-        ax.set_title('Mean Sea Surface Temperature for 20th Century Runs in Southern California')
+        shp = gpd.read_file('cinms_py')
+        shp.boundary.plot(ax=ax,
+                        color='midnightblue', 
+                        linewidth=4)
+        ax.set_title('Mean Sea Surface Temperature for 20th Century Runs in Southern California',
+                     size = 20)
         
         # plt.savefig('map.png')
 
