@@ -5,7 +5,6 @@ import shinyswatch
 import numpy as np
 import cartopy.crs as ccrs
 import geopandas as gpd
-from os import path
 
 from shiny import App, Inputs, Outputs, Session, reactive, render, req, ui
 here = Path(__file__).parent
@@ -49,8 +48,8 @@ climate_variable_choices_SST = [
 ]
 
 time_frame_choices = [
-    "20TH Century",
-    "RCP 8.5"
+    "20TH Century (1920 - 2005)",
+    "RCP 8.5 (2006 - 2100)"
 ]
 
 climate_experiment_choices = [
@@ -226,9 +225,9 @@ def server(input, output, session):
     #define vertical_profile (goes into output)
     def vertical_profile():
 #create if else statement to determine if it is a present or rcp85 graph
-        if(input.time_frame_vertical() == "20TH Century"):
+        if(input.time_frame_vertical() == "20TH Century (1920 - 2005)"):
             w = present
-        elif(input.time_frame_vertical() == "RCP 8.5"):
+        elif(input.time_frame_vertical() == "RCP 8.5 (2006 - 2100)"):
             w = rcp85
 # define x as the reactive input
         x = input.climate_variable_vertical()
@@ -271,12 +270,12 @@ def server(input, output, session):
 # define x as the reactive input
 #        x = input.climate_variable_mapping()
 #define y as subsetting for whatever variable is picked
-        if (input.climate_variable_mapping() == 'SALT'):
-            y = mapping_sst.SST
+        if (input.climate_variable_map() == 'SALT'):
+            y = mapping_salt.SALT
         # elif (input.climate_variable_vertical() == 'O2'):
         #     a_2 = "Dissolved Oxygen"
-        elif (input.climate_variable_mapping() == 'TEMP'):
-            y = mapping_salt.SALT
+        elif (input.climate_variable_map() == 'TEMP'):
+            y = mapping_sst.SST
 #        y = mapping_sst[x]
 #        y = mapping_sst.SST
 #create if else statement to put into title of graph
@@ -287,11 +286,11 @@ def server(input, output, session):
         # elif (input.climate_variable_vertical() == 'TEMP'):
         #     a_2 = "Temperature"
 #experiment choice input using an if else statement
-        if (input.experiment_choice_mapping() == 'mean'):
+        if (input.experiment_choice_map() == 'mean'):
             b_2 = y.mean("time")
-        elif (input.experiment_choice_mapping() == 'max'):
+        elif (input.experiment_choice_map() == 'max'):
             b_2 = y.max("time")
-        elif (input.experiment_choice_mapping() == 'min'):
+        elif (input.experiment_choice_map() == 'min'):
             b_2 = y.min("time")
 #create plot
 # Plot the subset data
@@ -312,9 +311,9 @@ def server(input, output, session):
                                     'ticks': np.arange(10, 30, 2)})
         #Lets set the color bar on top of the plot, lets provide the cax argument to the colorbar function
         ax.coastlines()
-        #lets throw the shape file in here 
-        # shp = gpd.read_file('cinms_py')
-        # shp.boundary.plot(ax=ax, 
+        #lets throw the shape file in here s
+        # shp = gpd.read_file(here / 'cinms_py')
+        # shp.boundary.plot(ax=ax,
         #                 color='midnightblue', 
         #                 linewidth=4)
         ax.set_title('Mean Sea Surface Temperature for 20th Century Runs in Southern California')
