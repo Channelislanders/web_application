@@ -127,39 +127,55 @@ app_ui = ui.page_navbar(shinyswatch.theme.sandstone(),
                 ui.output_plot("time_series")),
 #vertical profile nav panel
             ui.nav_panel("Vertical Profile",
-                ui.input_select(
-                id = "time_frame_vertical",
-                label = "Time Frame",
-                choices=time_frame_choices
+                         ui.layout_columns(
+                    ui.card(
+                        ui.input_select(
+                        id = "time_frame_vertical",
+                        label = "Time Frame",
+                        choices=time_frame_choices
+                ),
         ),
+        ui.card(               
                 ui.input_select(
-                id = "climate_variable_vertical",
-                label = "Climate Variable",
-                choices=climate_variable_choices_TEMP
+                        id = "climate_variable_vertical",
+                        label = "Climate Variable",
+                        choices=climate_variable_choices_TEMP
+                ),
         ),
+        ui.card(                
                 ui.input_select(
-                id = "experiment_choice_vertical",
-                label = "Experiment Choice",
-                choices=climate_experiment_choices
+                            id = "experiment_choice_vertical",
+                            label = "Experiment Choice",
+                            choices=climate_experiment_choices
+                    ),
         ),
+                         ),
                 ui.output_plot("vertical_profile")),
 #mapping nav panel
-            ui.nav_panel("Mapping",        
+            ui.nav_panel("Mapping",
+                         ui.layout_columns(   
+                             ui.card(     
                 ui.input_select(
                 id = "time_frame_map",
                 label = "Time Frame",
                 choices=time_frame_choices
         ),
+                             ),
+                             ui.card(
                 ui.input_select(
                 id = "climate_variable_map",
                 label = "Climate Variable",
                 choices=climate_variable_choices_SST
         ),
+                             ),
+                             ui.card(
                 ui.input_select(
                 id = "experiment_choice_map",
                 label = "Experiment Choice",
                 choices=climate_experiment_choices
         ),
+                             ),
+                         ),
             ui.output_plot("mapping")),
         title="Model Visualization",
         ),
@@ -259,7 +275,7 @@ def server(input, output, session):
                       size = 15)
         ax.set_ylabel("Depth (cm)",
                       size = 15)
-        plt.title(f"{a_2} Vertical Profile for {input.time_frame_vertical()}",
+        plt.title(f"Relationship between {a_2} and Depth in Channel Islands Marine Sanctuary: {input.time_frame_vertical()}",
                       size = 20)
 
         #returns plot
