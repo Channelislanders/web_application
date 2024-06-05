@@ -56,6 +56,13 @@ web_application
       |  sheephead-kelp-forest.jpg
 ```
 
+**myapp**: This folder contains the code as well as the data that is needed to run the app.
+
+- app.py: This contains the code of how the website is built, the interactivity of the website, and the rendering of the plots that will be outputted in the website.
+- (data folder): This contains a whole bunch of .nc files that are needed to create the visualization outputs.
+- cinms_py: This contains the shapefiles needed to create the Channel Island extent found on the mapping visualization tab.
+
+
 
 ### Contributors
 Project manager: [Patricia Park](https://github.com/p-park6)
