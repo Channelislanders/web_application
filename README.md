@@ -1,5 +1,5 @@
 # Web Application for Channel Islands variable observations
-Repository housing the code needed for the interactive web application. This is a capstone project for the [Master of Environmental Data Science at Bren School of Environmental Science and Management](https://bren.ucsb.edu), University of California, Santa Barbara.
+Repository housing the code needed for the interactive web application. This is a capstone project for the [Master of Environmental Data Science at Bren School of Environmental Science and Management](https://bren.ucsb.edu), University of California, Santa Barbara. To access the web application, you can click [here](https://shinyapps.bren.ucsb.edu/channelislanders/)
 
 Getting started
 To get started with shiny follow the installation instructions or just install it from pip.
