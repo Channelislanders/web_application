@@ -32,19 +32,32 @@ Vertical profiles and maps will show three drop down menus where the user will b
 
 ## **Structure:**
 
-The structure of the reposotory is as follows:
+The structure of the repository is as follows:
 ```
-web_application
-│   README.md
-│  .gitignore
-|  LICENSE
-|  requirements.txt
-└───myapp
-      │ app.py
-      │ plots.py
-      │ requirements.txt
-      │ shared.py
-      │ styles.css
+├── LICENSE
+├── README.md
+├── myapp
+│   ├── README.md
+│   ├── __pycache__
+│   │   ├── app.cpython-311.pyc
+│   │   └── app.cpython-38.pyc
+│   ├── app.py
+│   ├── ch_poster.jpg
+│   ├── climate_model.jpeg
+│   ├── data
+│   │   └── cinms_py
+│   │       ├── cinms_py.dbf
+│   │       ├── cinms_py.html
+│   │       ├── cinms_py.kmz
+│   │       ├── cinms_py.prj
+│   │       ├── cinms_py.sbn
+│   │       ├── cinms_py.sbx
+│   │       ├── cinms_py.shp
+│   │       ├── cinms_py.shp.xml
+│   │       ├── cinms_py.shx
+│   │       └── cinms_py.xml
+│   └── styles.css
+└── requirements.txt
 ```
 
 **myapp**: This folder contains the code as well as the data that is needed to run the app.
