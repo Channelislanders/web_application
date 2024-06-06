@@ -11,25 +11,25 @@ here = Path(__file__).parent
 
 
 #load and combine arrray's here:
-temp = xr.open_dataset(here / 'data/20C_rcp85_temp.nc')
+temp = xr.open_dataset(here / 'data/20C_rcp85_temp.nc', engine = 'netcdf4')
 
-o2 = xr.open_dataset(here / 'data/20C_rcp85_o2.nc')
+o2 = xr.open_dataset(here / 'data/20C_rcp85_o2.nc', engine = 'netcdf4')
 
-salt = xr.open_dataset(here / 'data/20C_rcp85_salt.nc')
+salt = xr.open_dataset(here / 'data/20C_rcp85_salt.nc', engine = 'netcdf4')
 
-sst = xr.open_dataset(here / 'data/20C_rcp85_sst.nc')
+sst = xr.open_dataset(here / 'data/20C_rcp85_sst.nc', engine = 'netcdf4')
 
-mapping_sst_20C = xr.open_dataset(here / 'data/SST_20C_final.nc')
+mapping_sst_20C = xr.open_dataset(here / 'data/SST_20C_final.nc', engine = 'netcdf4')
 
-mapping_sst_RCP85 = xr.open_dataset(here / 'data/SST_RCP85_final.nc')
+mapping_sst_RCP85 = xr.open_dataset(here / 'data/SST_RCP85_final.nc', engine = 'netcdf4')
 
-mapping_salt_20C = xr.open_dataset(here / 'data/SALT_20C_final.nc')
+mapping_salt_20C = xr.open_dataset(here / 'data/SALT_20C_final.nc', engine = 'netcdf4')
 
-mapping_salt_RCP85 = xr.open_dataset(here / 'data/SALT_RCP85_final.nc')
+mapping_salt_RCP85 = xr.open_dataset(here / 'data/SALT_RCP85_final.nc', engine = 'netcdf4')
 
-mapping_o2_20C = xr.open_dataset(here / 'data/O2_20C_final.nc')
+mapping_o2_20C = xr.open_dataset(here / 'data/O2_20C_final.nc', engine = 'netcdf4')
 
-mapping_o2_RCP85 = xr.open_dataset(here / 'data/O2_RCP85_final.nc')
+mapping_o2_RCP85 = xr.open_dataset(here / 'data/O2_RCP85_final.nc', engine = 'netcdf4')
 
 
 #merge arrays here
@@ -322,7 +322,7 @@ def server(input, output, session):
             b_2 = y.min("member_id").mean(["time", "z_t"])
 #create plot
 # Plot the subset data
-        fig = plt.figure(figsize=(15, 10))
+        fig = plt.figure(figsize=(20, 15))
         ax = plt.axes(projection=ccrs.PlateCarree())
         # Reverse the colormap
         #cmap = plt.cm.RdBu_r 
@@ -343,7 +343,7 @@ def server(input, output, session):
                         color='red', 
                         linewidth=1)
         ax.set_title('Mean Salinity between 1920 and 2100 in Channel Islands Marine Sanctuary',
-                     size = 5)
+                     size = 15)
         return fig
     
 
