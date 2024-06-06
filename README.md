@@ -39,9 +39,6 @@ web_application
 ├── README.md
 ├── myapp
 │   ├── README.md
-│   ├── __pycache__
-│   │   ├── app.cpython-311.pyc
-│   │   └── app.cpython-38.pyc
 │   ├── app.py
 │   ├── ch_poster.jpg
 │   ├── climate_model.jpeg
