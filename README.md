@@ -77,4 +77,4 @@ Client/Faculty Advisor: [Samantha Stevenson](https://github.com/samanthastevenso
 
 ## References for Data 
 
-Office of National Marine Sanctuaries, [06/06/2024]: Channel Islands National Marine Sanctuary Boundary (polygons) [Data Date Range], https://www.fisheries.noaa.gov/inport/item/40040., Access Constraints: None, Use Constraints: NOT FOR LEGAL USE, Distribution Liability: Digital boundary files are available for public consumption from the Office of National Marine Sanctuaies in hard copy or digital formats. See Distributor Contact Informationfor contact details.
+Office of National Marine Sanctuaries, [06/06/2024]: Channel Islands National Marine Sanctuary Boundary (polygons), https://www.fisheries.noaa.gov/inport/item/40040., Access Constraints: None, Use Constraints: NOT FOR LEGAL USE, Distribution Liability: Digital boundary files are available for public consumption from the Office of National Marine Sanctuaies in hard copy or digital formats. See Distributor Contact Informationfor contact details.
