@@ -11,22 +11,34 @@ here = Path(__file__).parent
 
 
 #load and combine arrray's here:
-temp = xr.open_dataset(here / '20C_rcp85_temp.nc'
-)
-o2 = xr.open_dataset(here / '20C_rcp85_o2.nc'
-)
-salt = xr.open_dataset(here / '20C_rcp85_salt.nc'
-)
-sst = xr.open_dataset(here / '20C_rcp85_sst.nc'
-)
-mapping_sst = xr.open_dataset(here / 'SST_20C_final.nc'
-)
-mapping_salt = xr.open_dataset(here / 'SST_20C_final.nc'
-)
+temp = xr.open_dataset(here / 'data/20C_rcp85_temp.nc')
+
+o2 = xr.open_dataset(here / 'data/20C_rcp85_o2.nc')
+
+salt = xr.open_dataset(here / 'data/20C_rcp85_salt.nc')
+
+sst = xr.open_dataset(here / 'data/20C_rcp85_sst.nc')
+
+mapping_sst_20C = xr.open_dataset(here / 'data/SST_20C_final.nc')
+
+mapping_sst_RCP85 = xr.open_dataset(here / 'data/SST_RCP85_final.nc')
+
+mapping_salt_20C = xr.open_dataset(here / 'data/SALT_20C_final.nc')
+
+mapping_salt_RCP85 = xr.open_dataset(here / 'data/SALT_RCP85_final.nc')
+
+mapping_o2_20C = xr.open_dataset(here / 'data/O2_20C_final.nc')
+
+mapping_o2_RCP85 = xr.open_dataset(here / 'data/O2_RCP85_final.nc')
 
 
 #merge arrays here
 merge_test = xr.merge([temp, o2, salt])
+
+#merge mapping arrays here
+merge_mapping_20c = xr.merge([mapping_sst_20C, mapping_salt_20C,mapping_o2_20C])
+
+merge_mapping_rcp85 = xr.merge([mapping_sst_RCP85, mapping_salt_RCP85,mapping_o2_RCP85])
 
 #seperate into 20C and rcp85 here
 present = merge_test.sel(time=slice("1920", "2005"))
@@ -44,7 +56,7 @@ climate_variable_choices_TEMP = [
 climate_variable_choices_SST = [
     "SALT",
     "O2",
-    "TEMP"
+    "SST"
 ]
 
 time_frame_choices = [
@@ -204,14 +216,14 @@ def server(input, output, session):
 #        y = merge_test[x].sel(z_t = 0, method = "nearest")
 #create if else statement to put into title of graph
         if (input.climate_variable_time() == 'SALT'):
-            a_1 = "Salinity"
+            a_1 = "Salinity (g/kg)"
         elif (input.climate_variable_time() == 'O2'):
             a_1 = "Dissolved Oxygen"
         elif (input.climate_variable_time() == 'TEMP'):
             a_1 = "Temperature"
 #create if else statement to put y axis of graph
         if (input.climate_variable_time() == 'SALT'):
-            a_2 = "Salinity (gram/kilogram)"
+            a_2 = "Salinity (g/kg)"
         elif (input.climate_variable_time() == 'O2'):
             a_2 = "Dissolved Oxygen (mmol/m^3)"
         elif (input.climate_variable_time() == 'TEMP'):
@@ -255,7 +267,7 @@ def server(input, output, session):
         y = w[x]
 #create if else statement to put into title of graph
         if (input.climate_variable_vertical() == 'SALT'):
-            a_2 = 'Salinity'
+            a_2 = 'Salinity (g/kg)'
         elif (input.climate_variable_vertical() == 'O2'):
             a_2 = "Dissolved Oxygen"
         elif (input.climate_variable_vertical() == 'TEMP'):
@@ -264,9 +276,9 @@ def server(input, output, session):
         if (input.experiment_choice_vertical() == 'mean'):
             b_2 = y.mean("time").mean("member_id")
         elif (input.experiment_choice_vertical() == 'max'):
-            b_2 = y.max("time").max("member_id")
+            b_2 = y.mean("time").max("member_id")
         elif (input.experiment_choice_vertical() == 'min'):
-            b_2 = y.min("time").min("member_id")
+            b_2 = y.mean("time").min("member_id")
 #create plot (maybe try to see if changing the title works?)
         fig, ax = plt.subplots()
         b_2.plot(y = 'z_t'),
@@ -275,7 +287,7 @@ def server(input, output, session):
                       size = 15)
         ax.set_ylabel("Depth (cm)",
                       size = 15)
-        plt.title(f"Relationship between {a_2} and Depth in Channel Islands Marine Sanctuary: {input.time_frame_vertical()}",
+        plt.title(f"Relationship between {a_2} and Depth in Channel Islands Marine Sanctuary: 1920 - 2005",
                       size = 15)
 
         #returns plot
@@ -288,40 +300,29 @@ def server(input, output, session):
     #define vertical_profile (goes into output)
     def mapping():
 #create if else statement to determine if it is a present or rcp85 graph
-        # if(input.time_frame_vertical() == "20TH Century"):
-        #     w = present
-        # elif(input.time_frame_vertical() == "RCP 8.5"):
-        #     w = rcp85
+        if(input.time_frame_map() == "20TH Century (1920 - 2005)"):
+            w = merge_mapping_20c
+        elif(input.time_frame_map() == "RCP 8.5 (2006 - 2100)"):
+            w = merge_mapping_rcp85
 # define x as the reactive input
-#        x = input.climate_variable_mapping()
+        x = input.climate_variable_map()
 #define y as subsetting for whatever variable is picked
-        # if (input.climate_variable_map() == 'SALT'):
-        #     y = mapping_salt.SALT
-        # elif (input.climate_variable_vertical() == 'O2'):
-        #     a_2 = "Dissolved Oxygen"
-        if (input.climate_variable_map() == 'TEMP'):
-            y = mapping_sst.SST
-#        y = mapping_sst[x]
-#        y = mapping_sst.SST
-#create if else statement to put into title of graph
-        # if (input.climate_variable_vertical() == 'SALT'):
-        #     a_2 = 'Salinity'
-        # elif (input.climate_variable_vertical() == 'O2'):
-        #     a_2 = "Dissolved Oxygen"
-        # elif (input.climate_variable_vertical() == 'TEMP'):
-        #     a_2 = "Temperature"
-#experiment choice input using an if else statement 
-
+        if (input.climate_variable_map() == 'SALT'):
+            y = w[x]
+        elif (input.climate_variable_map() == 'O2'):
+            y = w[x]
+        elif (input.climate_variable_map() == 'SST'):
+            y = w[x]
 #find mean of time and depth of salinity and O2
         if (input.experiment_choice_map() == 'mean'):
-            b_2 = y.mean("member_id")
+            b_2 = y.mean("member_id").mean(["time", "z_t"])
         elif (input.experiment_choice_map() == 'max'):
-            b_2 = y.max("member_id")
+            b_2 = y.max("member_id").mean(["time", "z_t"])
         elif (input.experiment_choice_map() == 'min'):
-            b_2 = y.min("member_id")
+            b_2 = y.min("member_id").mean(["time", "z_t"])
 #create plot
 # Plot the subset data
-        fig = plt.figure(figsize=(5, 10))
+        fig = plt.figure(figsize=(15, 10))
         ax = plt.axes(projection=ccrs.PlateCarree())
         # Reverse the colormap
         #cmap = plt.cm.RdBu_r 
@@ -334,48 +335,16 @@ def server(input, output, session):
                                     'shrink': 0.2, 
                                     'pad': 0.05, 
                                     'aspect': 30})
-                                    # #edit the ticks on the cbar
-                                    # 'ticks': np.arange(10, 30, 2)})
         #Lets set the color bar on top of the plot, lets provide the cax argument to the colorbar function
         ax.coastlines()
         #lets throw the shape file in here s
-        shp = gpd.read_file('cinms_py')
+        shp = gpd.read_file('data/cinms_py')
         shp.boundary.plot(ax=ax,
-                        color='midnightblue', 
-                        linewidth=4)
+                        color='red', 
+                        linewidth=1)
         ax.set_title('Mean Salinity between 1920 and 2100 in Channel Islands Marine Sanctuary',
-                     size = 10)
-        
-        # plt.savefig('map.png')
-
-        # map = (here / 'map.png')
+                     size = 5)
         return fig
-
-
-        # fig, ax = plt.subplots()
-        # ax = plt.axes(projection=ccrs.PlateCarree())
-        # ax.set_title('Mean Sea Surface Temperature for 20th Century Runs in Southern California')
-        # # Reverse the colormap
-        # cmap = plt.cm.RdBu_r 
-        # #Lets set the color bar on top of the plot, lets provide the cax argument to the colorbar function
-        # ax.coastlines()
-        # # #lets throw the shape file in here 
-        # # shp = gpd.read_file('cinms_py')
-        # # shp.boundary.plot(ax=ax, 
-        # #                 color='midnightblue', 
-        # #                 linewidth=4)
-        # #lets make the plot contour rather than patch by using the contourf function
-        # y.plot(ax=ax, 
-        #         transform=ccrs.PlateCarree(), 
-        #         cmap=cmap,
-        #         cbar_kwargs={'orientation': 'horizontal', 
-        #                     'label': 'Sea Surface Temperature (°C)', 
-        #                     'shrink': 0.8, 
-        #                     'pad': 0.05, 
-        #                     'aspect': 30,
-        #                             #edit the ticks on the cbar
-        #                     'ticks': np.arange(10, 30, 2)})
-        #return fig
     
 
 
