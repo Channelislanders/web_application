@@ -34,6 +34,7 @@ Vertical profiles and maps will show three drop down menus where the user will b
 
 The structure of the repository is as follows:
 ```
+web_application
 ├── LICENSE
 ├── README.md
 ├── myapp
